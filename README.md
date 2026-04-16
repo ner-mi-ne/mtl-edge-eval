@@ -1,7 +1,6 @@
 # mtl-edge-eval
 
 Pure-Python SEISM edge evaluation for multi-task learning.
-Replicates the MATLAB `correspondPixels` MEX kernel using OR-Tools CSA matching.
 
 Bachelor thesis project, 2026.
 
