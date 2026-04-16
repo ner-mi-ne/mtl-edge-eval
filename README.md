@@ -91,7 +91,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --out              results/edge_eval_10.json
 ```
 
-### 3 -- 100-image subset benchmark (~655 s, thesis result)
+### 3 -- 100-image subset benchmark (~655 s )
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
