@@ -75,36 +75,40 @@ Python 3.8+ required.
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir  outputs/HRNet/edge \
-    --seg_dir   PASCAL_MT/pascal-context/trainval \
-    --image_list "2008_000002" \
-    --out        results/edge_eval_1img.json
+    --pred_dir outputs/PASCALContext/resnet18/single_task/edge/results/edge \
+    --seg_dir  PASCAL_MT/pascal-context/trainval \
+    --image_list_file benchmark/image_lists/single_2008_000002.txt \
+    --out results/edge_eval_1img.json
 ```
 
-### 2 -- 10-image subset benchmark (~66 s)
+### 2 -- 10-image subset (~66 s)
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir         outputs/HRNet/edge \
+    --pred_dir         outputs/PASCALContext/resnet18/single_task/edge/results/edge \
     --seg_dir          PASCAL_MT/pascal-context/trainval \
     --image_list_file  benchmark/image_lists/small_10.txt \
     --out              results/edge_eval_10.json
 ```
 
-### 3 -- 100-image subset benchmark (~655 s )
+### 3 -- 100-image subset (~11 min)
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir         outputs/HRNet/edge \
+    --pred_dir         outputs/PASCALContext/resnet18/single_task/edge/results/edge \
     --seg_dir          PASCAL_MT/pascal-context/trainval \
     --image_list_file  benchmark/image_lists/medium_100.txt \
     --out              results/edge_eval_100.json
 ```
 
-For the full argument list, run:
+### For the full dataset 5 105 images (~9 hours)
 
 ```bash
-python edge_eval/evaluate_edges_seism_matlab_identical.py --help
+python edge_eval/evaluate_edges_seism_matlab_identical.py \
+    --pred_dir         outputs/PASCALContext/resnet18/single_task/edge/results/edge \
+    --seg_dir          PASCAL_MT/pascal-context/trainval \
+    --image_list_file  benchmark/image_lists/full_5105.txt \
+    --out              results/edge_eval_full.json
 ```
 
 ---
