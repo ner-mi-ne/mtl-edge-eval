@@ -26,19 +26,6 @@ choice made to reproduce MATLAB results exactly:
 | Matching kernel | `correspondPixels` MEX (C++) | OR-Tools CSA (Python) |
 | ODS / OIS / AP | `general_ods/ois/ap.m` | identical formulas |
 
-**Verified results** (100-image PASCAL Context subset, April 2026):
-
-| Metric | MATLAB | Python (this script) |
-|--------|--------|---------------------|
-| ODS | 66.10% | 66.15% |
-| OIS | 67.77% | 67.81% |
-| AP | 54.20% | 54.02% |
-| Runtime / 100 images | ~1413 s | ~655 s (~2.2x faster) |
-
-Agreement within 0.2 percentage points confirms algorithmic equivalence.
-
----
-
 ## Dependencies
 
 ```
@@ -71,14 +58,6 @@ Python 3.8+ required.
 ---
 
 ## Outputs
-
-**Printed to stdout:**
-
-```
-ODS: 0.6615  (P=0.6823, R=0.6417)
-OIS: 0.6781  (P=0.6967, R=0.6604)
-AP:  0.5402
-```
 
 **JSON file** (written to `--out`), containing:
 
@@ -128,23 +107,6 @@ For the full argument list, run:
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py --help
 ```
-
----
-
-## CLI reference
-
-| Argument | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `--pred_dir` | yes | -- | Directory of predicted edge PNGs |
-| `--seg_dir` | yes | -- | Directory of GT .mat files (PASCAL Context) |
-| `--out` | no | (none) | Output JSON path |
-| `--image_list_file` | no | (none) | Text file of image stems, one per line |
-| `--image_list` | no | (none) | Comma-separated image stems |
-| `--max_images` | no | (none) | Limit to first N images |
-| `--n_thresholds` | no | 99 | Number of thresholds (keep 99 for MATLAB compatibility) |
-| `--maxdist` | no | 0.0075 | Matching tolerance as fraction of image diagonal |
-| `--no_thin` | no | off | Disable thinning (breaks MATLAB compatibility) |
-| `--debug_timing` | no | off | Print per-threshold timing |
 
 ---
 
