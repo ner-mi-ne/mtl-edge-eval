@@ -668,53 +668,85 @@ def compute_ap_matlab(mean_rec: np.ndarray, mean_prec: np.ndarray) -> float:
     """
     Compute AP exactly as MATLAB's general_ap.m does.
 
-    MATLAB code:
-        [~, k] = unique(stats.mean_rec);   % First occurrence indices
-        k = k(end:-1:1);                   % Reverse to descending order
-        stats.mean_rec = stats.mean_rec(k);
+    MATLAB reference (general_ap.m):
+        [~,k] = unique(stats.mean_rec);
+        k = k(end:-1:1);
+        stats.mean_rec  = stats.mean_rec(k);
         stats.mean_prec = stats.mean_prec(k);
         AP = interp1(stats.mean_rec, stats.mean_prec, 0:.01:1);
         AP = sum(AP(~isnan(AP))) / 100;
 
-    Key behaviors to match:
-    1. unique() returns first occurrence indices (sorted ascending)
-    2. We reverse them to get descending order
-    3. interp1 returns NaN for out-of-bounds queries
-    4. We sum only non-NaN values and divide by 100
+    Key behaviours matched to MATLAB:
+
+    1. MATLAB vacuous NaN exclusion:
+       MATLAB computes precision as cntP/sumP.  When sumP=0 and cntR=0
+       (no predictions at a very high threshold), MATLAB gets 0/0 = NaN.
+       Python uses P=1.0 here (vacuous precision) for ODS/OIS correctness,
+       but these points must be excluded from AP to match MATLAB.
+       Without exclusion, the R=0 interpolation point returns P=1.0 in Python
+       instead of NaN in MATLAB, inflating AP by exactly 1/100 = +0.01.
+       Fix: filter out all (R=0, P=1) entries before unique/interpolation.
+
+    2. unique() + reversal:
+       np.unique returns first-occurrence indices in ascending-value order.
+       k[::-1] mirrors MATLAB's k = k(end:-1:1) → descending recall order.
+
+    3. Ascending sort for np.interp:
+       MATLAB interp1 handles monotone-decreasing X; np.interp requires
+       ascending X, so we re-sort after the MATLAB-style reversal.
+
+    4. Out-of-bounds → NaN (MATLAB interp1 behaviour):
+       Recall query points outside [min_rec, max_rec] are set to NaN.
+
+    5. Divide by 100 (not by count of valid values):
+       Matches MATLAB's sum(AP(~isnan(AP))) / 100.
     """
     if len(mean_rec) < 2:
         return 0.0
 
-    # MATLAB unique(): returns first occurrence indices (sorted by value)
-    _, first_indices = np.unique(mean_rec, return_index=True)
+    # --- Step 1: Remove vacuous-precision points before interpolation ---
+    # In MATLAB, thresholds where sumP=0 AND cntR=0 produce 0/0 = NaN for
+    # precision.  MATLAB's interp1 propagates this NaN to the R=0 query point,
+    # which is then excluded by ~isnan().
+    # In Python, P=1.0 is assigned instead (vacuous convention, needed for ODS
+    # and OIS), but for AP we must replicate MATLAB's NaN-exclusion behaviour.
+    # Vacuous points are uniquely identified by (R=0.0, P=1.0): this combination
+    # can only arise when sumP=0 and cntR=0 (no predictions, no GT matches).
+    vacuous = (mean_rec == 0.0) & (mean_prec == 1.0)
+    mr = mean_rec[~vacuous]
+    mp = mean_prec[~vacuous]
 
-    # Reverse indices (MATLAB: k = k(end:-1:1))
-    k = first_indices[::-1]
+    if len(mr) < 2:
+        return 0.0
 
-    rec_unique = mean_rec[k]
-    prec_unique = mean_prec[k]
+    # --- Step 2: unique() + reversal (direct translation of general_ap.m) ---
+    # np.unique(mr, return_index=True) → first-occurrence indices, sorted by
+    # ascending unique value.  k[::-1] reverses to descending recall order,
+    # matching MATLAB's k = k(end:-1:1).
+    _, k = np.unique(mr, return_index=True)
+    k = k[::-1]
+
+    rec_unique  = mr[k]
+    prec_unique = mp[k]
 
     if len(rec_unique) < 2:
         return 0.0
 
-    # Ensure ascending order for interpolation
+    # --- Step 3: Ensure ascending order for np.interp ---
+    # MATLAB interp1 accepts monotone-decreasing X; np.interp requires ascending.
     if rec_unique[0] > rec_unique[-1]:
-        rec_unique = rec_unique[::-1]
+        rec_unique  = rec_unique[::-1]
         prec_unique = prec_unique[::-1]
 
-    # 101-point interpolation (0:0.01:1)
+    # --- Step 4: 101-point interpolation (0:0.01:1) ---
     recall_points = np.linspace(0.0, 1.0, 101)
-
-    # np.interp equivalent to MATLAB interp1
     ap_values = np.interp(recall_points, rec_unique, prec_unique)
 
-    # MATLAB interp1 returns NaN for out-of-bounds
-    min_rec = rec_unique.min()
-    max_rec = rec_unique.max()
-    ap_values[recall_points < min_rec] = np.nan
-    ap_values[recall_points > max_rec] = np.nan
+    # --- Step 5: Mask out-of-bounds → NaN (mirrors MATLAB interp1) ---
+    ap_values[recall_points < rec_unique.min()] = np.nan
+    ap_values[recall_points > rec_unique.max()] = np.nan
 
-    # Sum non-NaN values and divide by 100
+    # --- Step 6: sum(AP(~isnan(AP))) / 100 ---
     valid = ap_values[~np.isnan(ap_values)]
     if len(valid) == 0:
         return 0.0
