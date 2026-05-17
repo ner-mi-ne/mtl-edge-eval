@@ -1,6 +1,6 @@
 # mtl-edge-eval
 
-Pure-Python SEISM edge evaluation for multi-task learning.
+Python-native SEISM-compatible edge evaluation for multi-task learning.
 
 Bachelor thesis project, 2026.
 
@@ -12,23 +12,24 @@ Bachelor thesis project, 2026.
 maps against PASCAL Context ground-truth boundaries and reports the standard
 SEISM metrics: **ODS**, **OIS**, and **AP**.
 
-It is a drop-in Python replacement for the original MATLAB evaluation path
-(`evaluation/eval_edge.py` -> SEISM `pr_curves_base.m`), with every algorithmic
-choice made to reproduce MATLAB results exactly:
+It provides a Python-native alternative to the original MATLAB evaluation path
+(`evaluation/eval_edge.py` -> SEISM `pr_curves_base.m`). The implementation
+follows the MATLAB/SEISM reference in the main algorithmic choices and was
+validated to closely reproduce the MATLAB results:
 
 | Component | MATLAB (SEISM) | This script |
 |-----------|---------------|-------------|
-| Thresholds | `linspace(1/100, 99/100, 99)` | identical |
+| Thresholds | `linspace(1/100, 99/100, 99)` | same threshold grid |
 | GT thinning | `bwmorph(E,'thin',Inf)` | `skimage.morphology.thin` |
 | Pred thinning | `bwmorph(E,'thin',Inf)` | `skimage.morphology.thin` |
-| Matching tolerance | `maxDist = 0.0075 * diagonal` | identical constant |
-| Matching kernel | `correspondPixels` MEX (C++) | OR-Tools CSA (Python) |
-| ODS / OIS / AP | `general_ods/ois/ap.m` | identical formulas |
+| Matching tolerance | `maxDist = 0.0075 * diagonal` | same tolerance constant |
+| Matching kernel | `correspondPixels` MEX (C++) | OR-Tools min-cost flow / Hungarian fallback |
+| ODS / OIS / AP | `general_ods/ois/ap.m` | MATLAB-compatible aggregation |
 
 ## Dependencies
 
 ```
-pip install scikit-image scipy ortools numpy Pillow
+pip install scikit-image scipy ortools numpy Pillow tqdm
 ```
 
 | Package | Role |
@@ -38,6 +39,7 @@ pip install scikit-image scipy ortools numpy Pillow
 | `ortools` | OR-Tools CSA primary matching (strongly recommended) |
 | `numpy` | Array operations |
 | `Pillow` | PNG loading |
+| `tqdm` | Progress bars |
 
 Python 3.8+ required.
 
@@ -64,7 +66,7 @@ Python 3.8+ required.
 - `thresholds` -- 99 threshold values used
 - `precision`, `recall`, `fmeasure` -- full 99-point P/R/F curve
 - `per_image_f1` -- per-image best F1 (used by OIS)
-- `timing` -- total runtime, matching vs. thinning breakdown
+- `timing` -- total runtime
 - `matching_algorithm` -- `"CSA (OR-Tools)"` or `"Hungarian"`
 
 ---
@@ -101,7 +103,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --out              results/edge_eval_100.json
 ```
 
-### For the full dataset 5 105 images
+### 4 -- Full dataset: 5,105 images
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
@@ -111,16 +113,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --out              results/edge_eval_full.json
 ```
 
----
 
-## Relation to the MATLAB benchmark
-
-This script replicates the core kernel of the MATLAB SEISM evaluation pipeline,
-omitting only production-infrastructure overhead (rsync, temp files, SEISM framework
-boilerplate). The omitted parts would make MATLAB *slower*, so the speedup comparison
-is conservative. The Python implementation is ~2.2x faster because OR-Tools CSA
-outperforms `correspondPixels` MEX for the bipartite matching step, which accounts
-for ~98% of MATLAB's total runtime.
 
 ---
 
