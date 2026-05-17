@@ -71,7 +71,7 @@ Python 3.8+ required.
 
 ## Example commands
 
-### 1 -- Single-image sanity check (~7 s)
+### 1 -- Single-image sanity check
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
@@ -81,7 +81,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --out results/edge_eval_1img.json
 ```
 
-### 2 -- 10-image subset (~66 s)
+### 2 -- 10-image subset 
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
@@ -91,7 +91,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --out              results/edge_eval_10.json
 ```
 
-### 3 -- 100-image subset (~11 min)
+### 3 -- 100-image subset 
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
@@ -101,7 +101,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --out              results/edge_eval_100.json
 ```
 
-### For the full dataset 5 105 images (~9 hours)
+### For the full dataset 5 105 images
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
