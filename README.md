@@ -77,8 +77,8 @@ Python 3.8+ required.
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir outputs/PASCALContext/resnet18/single_task/edge/results/edge \
-    --seg_dir  PASCAL_MT/pascal-context/trainval \
+    --pred_dir <path/to/predicted/edge/pngs> \
+    --seg_dir  <path/to/pascal-context/trainval> \
     --image_list_file image_lists/single_2008_000002.txt \
     --out results/edge_eval_1img.json
 ```
@@ -87,8 +87,8 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir         outputs/PASCALContext/resnet18/single_task/edge/results/edge \
-    --seg_dir          PASCAL_MT/pascal-context/trainval \
+    --pred_dir         <path/to/predicted/edge/pngs> \
+    --seg_dir          <path/to/pascal-context/trainval> \
     --image_list_file  image_lists/small_10.txt \
     --out              results/edge_eval_10.json
 ```
@@ -97,8 +97,8 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir         outputs/PASCALContext/resnet18/single_task/edge/results/edge \
-    --seg_dir          PASCAL_MT/pascal-context/trainval \
+    --pred_dir         <path/to/predicted/edge/pngs> \
+    --seg_dir          <path/to/pascal-context/trainval> \
     --image_list_file  image_lists/medium_100.txt \
     --out              results/edge_eval_100.json
 ```
@@ -116,9 +116,9 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
 
 The repository includes fixed image-list files:
 
-- `benchmark/image_lists/small_10.txt`
-- `benchmark/image_lists/medium_100.txt`
-- `benchmark/image_lists/full_5105.txt`
+- `image_lists/small_10.txt`
+- `image_lists/medium_100.txt`
+- `image_lists/full_5105.txt`
 
 These files contain only image identifiers, not dataset images or annotations.
 The actual PASCAL-Context data and prediction folders must be provided separately.
