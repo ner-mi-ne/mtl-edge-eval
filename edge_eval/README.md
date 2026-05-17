@@ -32,7 +32,7 @@ Both scripts report:
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
     --pred_dir  <path/to/predicted/edge/pngs> \
     --seg_dir   <path/to/pascal-context/trainval> \
-    --image_list_file benchmark/image_lists/small_10.txt \
+    --image_list_file image_lists/small_10.txt \
     --out results/serial_eval_10.json
 ```
 
@@ -42,7 +42,7 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
 python edge_eval/evaluate_edges_seism_matlab_identical_parallel.py \
     --pred_dir  <path/to/predicted/edge/pngs> \
     --seg_dir   <path/to/pascal-context/trainval> \
-    --image_list_file benchmark/image_lists/small_10.txt \
+    --image_list_file image_lists/small_10.txt \
     --workers 4 \
     --out results/parallel_eval_10.json
 ```
