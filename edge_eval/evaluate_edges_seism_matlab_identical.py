@@ -56,13 +56,6 @@ MAIN OUTPUTS
   JSON:     Full metrics, P/R curve (99 points), per-image F1, thresholds,
             timing, and matching algorithm used.
 
-VERIFIED RESULTS (N=100, April 2026, Apple M-series)
-------------------------------------------------------
-  ODS: 66.15%   OIS: 67.81%   AP: 54.02%
-  Runtime: ~655 s / 100 images (~6.6 s/image).
-  MATLAB baseline (correspondPixels MEX): ~1413 s / 100 images (~14.1 s/image).
-  Python is ~2.2x faster end-to-end.
-
 USAGE
 -----
   # Evaluate all predictions in a directory:
