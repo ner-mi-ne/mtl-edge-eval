@@ -42,44 +42,7 @@ MATLAB FAIRNESS NOTES
 * Same 99-threshold SEISM evaluation inside each worker.
 * Time measurement wraps only the evaluation loop, not process-pool startup,
   matching the MATLAB timing scope as closely as possible.
-
-VERIFIED CORRECTNESS
----------------------
-The parallel script produces ODS/OIS/AP within floating-point noise of the
-serial script when run on the same image list (verified on n=10 and n=100).
-Any differences larger than 1e-6 indicate a bug.
-
-AP MATLAB COMPATIBILITY
-------------------------
-``compute_ap_matlab`` is imported from the serial module and therefore
-automatically inherits all fixes applied there — including the MATLAB AP
-compatibility fix that filters vacuous (R=0, P=1) interpolation points to
-match MATLAB's 0/0=NaN exclusion behaviour (see MATLAB_AP_COMPATIBILITY_FIX.md).
-No separate AP code exists in this file.
-
-USAGE
------
-  # n=10 subset, 4 workers
-  python edge_eval/evaluate_edges_seism_matlab_identical_parallel.py \\
-      --pred_dir  outputs/PASCALContext/resnet18/single_task/edge/results/edge \\
-      --seg_dir   PASCAL_MT/pascal-context/trainval \\
-      --image_list_file benchmark/image_lists/small_10.txt \\
-      --workers 4 \\
-      --out results/parallel_eval_10.json
-
-  # n=100 subset, all CPUs
-  python edge_eval/evaluate_edges_seism_matlab_identical_parallel.py \\
-      --pred_dir  outputs/PASCALContext/resnet18/single_task/edge/results/edge \\
-      --seg_dir   PASCAL_MT/pascal-context/trainval \\
-      --image_list_file benchmark/image_lists/medium_100.txt \\
-      --out results/parallel_eval_100.json
-
-  # full n=5105, all CPUs
-  python edge_eval/evaluate_edges_seism_matlab_identical_parallel.py \\
-      --pred_dir  outputs/PASCALContext/resnet18/single_task/edge/results/edge \\
-      --seg_dir   PASCAL_MT/pascal-context/trainval \\
-      --image_list_file benchmark/image_lists/full_5105.txt \\
-      --out results/parallel_eval_5105.json
+  
 """
 
 import sys
