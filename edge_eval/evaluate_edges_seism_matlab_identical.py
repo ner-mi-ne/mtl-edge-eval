@@ -56,20 +56,6 @@ MAIN OUTPUTS
   JSON:     Full metrics, P/R curve (99 points), per-image F1, thresholds,
             timing, and matching algorithm used.
 
-USAGE
------
-  # Evaluate all predictions in a directory:
-  python edge_eval/evaluate_edges_seism_matlab_identical.py \
-      --pred_dir  outputs/HRNet/edge \
-      --seg_dir   PASCAL_MT/pascal-context/trainval \
-      --out       results/edge_eval.json
-
-  # Evaluate a named subset using an image-list file (one stem per line):
-  python edge_eval/evaluate_edges_seism_matlab_identical.py \
-      --pred_dir         outputs/HRNet/edge \
-      --seg_dir          PASCAL_MT/pascal-context/trainval \
-      --image_list_file  benchmark/image_lists/medium_100.txt \
-      --out              results/edge_eval_100.json
 """
 
 import sys
