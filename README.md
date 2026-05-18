@@ -107,8 +107,8 @@ python edge_eval/evaluate_edges_seism_matlab_identical.py \
 
 ```bash
 python edge_eval/evaluate_edges_seism_matlab_identical.py \
-    --pred_dir         outputs/PASCALContext/resnet18/single_task/edge/results/edge \
-    --seg_dir          PASCAL_MT/pascal-context/trainval \
+    --pred_dir <path/to/predicted/edge/pngs> \
+    --seg_dir  <path/to/pascal-context/trainval> \
     --image_list_file  image_lists/full_5105.txt \
     --out              results/edge_eval_full.json
 ```
